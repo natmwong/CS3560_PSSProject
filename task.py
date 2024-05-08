@@ -12,7 +12,7 @@ class Task:
         # Add creation logic here
         pass
 
-    def edit(self, new_start_time, new_duration, new_task_type):
+    def edit_task(self, new_start_time, new_duration, new_task_type):
         self.start_time = new_start_time
         self.duration = new_duration
         self.task_type = new_task_type
