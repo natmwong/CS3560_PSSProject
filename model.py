@@ -60,3 +60,29 @@ class Model:
         
         # No overlap detected
         return True
+    
+    def save_tasks_to_file(self, filename):
+        # Save tasks to a file
+        with open(filename, 'w') as file:
+            for task in self.tasks:
+                if isinstance(task, RecurringTask):
+                    file.write(f"{task.start_time},{task.duration},{task.task_type},{task.recurrence_pattern},{task.start_date},{task.end_date}\n")
+                elif isinstance(task, TransientTask):
+                    file.write(f"{task.start_time},{task.duration},{task.task_type}\n")
+                elif isinstance(task, AntiTask):
+                    file.write(f"{task.start_time},{task.duration},{task.task_type},{task.referenced_task}\n")
+                else:
+                    file.write(f"{task.start_time},{task.duration},{task.task_type}\n")
+
+    def load_tasks_from_file(self, filename):
+        # Load tasks from a file
+        with open(filename, 'r') as file:
+            for line in file:
+                task_data = line.strip().split(',')
+                if len(task_data) == 3:
+                    task = TransientTask(task_data[0], int(task_data[1]), task_data[2])
+                elif len(task_data) == 4:
+                    task = AntiTask(task_data[0], int(task_data[1]), task_data[2], task_data[3])
+                elif len(task_data) == 6:
+                    task = RecurringTask(task_data[0], int(task_data[1]), task_data[2], task_data[3], task_data[4], task_data[5])
+                self.add_task(task)

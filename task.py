@@ -1,4 +1,6 @@
 class Task:
+
+    # task_type can be one of the following: attending class, studying, working on assignment, etc.
     def __init__(self, start_time, duration, task_type):
         self.start_time = start_time
         self.duration = duration
