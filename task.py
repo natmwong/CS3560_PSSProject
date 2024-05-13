@@ -16,10 +16,6 @@ class Task:
         
         return True
 
-    def create(self):
-        # Add creation logic here
-        pass
-
     def edit_task(self, new_start_time, new_duration, new_task_type):
         self.start_time = new_start_time
         self.duration = new_duration
