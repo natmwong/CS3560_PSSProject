@@ -11,7 +11,7 @@ class RecurringTask(Task):
         self.start_date = start_date
         self.end_date = end_date
 
-    # Generate instances of the recurring task based on the recurrence pattern
+    # Generate instances of the recurring task based on the recurrence pattern from start_date to end_date
     def generate_instances(self):
         instances = []
         current_date = self.start_date
@@ -32,6 +32,8 @@ class RecurringTask(Task):
                     instance_start_time = datetime.combine(current_date, datetime.strptime(self.start_time, "%I:%M %p").time())
                     instances.append(Task(instance_start_time, self.duration, self.task_type))
             current_date += timedelta(days=1)
+            if current_date > self.end_date:  # Check if current_date exceeds the end_date
+                break  # Exit the loop if current_date exceeds the end_date
         return instances
 
     # Override methods
