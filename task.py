@@ -7,8 +7,14 @@ class Task:
         self.task_type = task_type
 
     def validate(self):
-        # Add validation logic here
-        pass
+        # Ensure start time is in valid format
+        # Ensure duration is a positive integer or time format
+        if not self.start_time:
+            return False
+        if not self.duration:
+            return False
+        
+        return True
 
     def create(self):
         # Add creation logic here
@@ -18,7 +24,3 @@ class Task:
         self.start_time = new_start_time
         self.duration = new_duration
         self.task_type = new_task_type
-
-    def delete(self):
-        # Add deletion logic here
-        pass

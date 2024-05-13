@@ -9,9 +9,9 @@ class Model:
         self.tasks = []
 
     def add_task(self, task):
-        # Add task to the list
         # Check for overlap before adding the task
         if self.validate_overlap(task):
+            # Add task to the list
             self.tasks.append(task)
             return True
         else:
