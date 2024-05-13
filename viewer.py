@@ -24,18 +24,22 @@ class Viewer:
         self.task_input_frame = ttk.Frame(self.root)
         self.task_input_frame.pack(pady=10)
 
-        # Labels and entry fields for task properties
+        # Start Time Calendar Selector
         ttk.Label(self.task_input_frame, text="Start Time:").grid(row=0, column=0, padx=5, pady=5)
-        self.start_time_entry = ttk.Entry(self.task_input_frame)
-        self.start_time_entry.grid(row=0, column=1, padx=5, pady=5)
+        self.start_time_calendar = Calendar(self.task_input_frame, selectmode="day", date_pattern="yyyy-mm-dd")
+        self.start_time_calendar.grid(row=0, column=1, padx=5, pady=5)
 
-        ttk.Label(self.task_input_frame, text="Duration:").grid(row=1, column=0, padx=5, pady=5)
+        # Duration Entry Field (Only for Hours)
+        ttk.Label(self.task_input_frame, text="Duration (Hours):").grid(row=1, column=0, padx=5, pady=5)
         self.duration_entry = ttk.Entry(self.task_input_frame)
         self.duration_entry.grid(row=1, column=1, padx=5, pady=5)
 
+        # Task Type Dropdown Menu
         ttk.Label(self.task_input_frame, text="Task Type:").grid(row=2, column=0, padx=5, pady=5)
-        self.task_type_entry = ttk.Entry(self.task_input_frame)
-        self.task_type_entry.grid(row=2, column=1, padx=5, pady=5)
+        self.task_type_var = tk.StringVar(self.task_input_frame)
+        task_types = ["Transient", "Recurring", "Anti"]
+        self.task_type_dropdown = ttk.OptionMenu(self.task_input_frame, self.task_type_var, *task_types)
+        self.task_type_dropdown.grid(row=2, column=1, padx=5, pady=5)
 
         # Button to add task
         add_button = ttk.Button(self.task_input_frame, text="Add Task", command=self.add_task)
