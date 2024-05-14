@@ -28,7 +28,7 @@ class Viewer:
         # Task Type Dropdown Menu
         ttk.Label(self.task_input_frame, text="Task Type:").grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.task_type_var = tk.StringVar(self.task_input_frame)
-        task_types = ["Transient Task", "Recurring Task", "Antitask", "Transient Task"]
+        task_types = ["Transient Task", "Transient Task", "Recurring Task", "Antitask"]
         # Set the default value for the dropdown menu
         self.task_type_var.set(task_types[0])
         self.task_type_dropdown = ttk.OptionMenu(self.task_input_frame, self.task_type_var, *task_types,  command=self.show_recurring_options)
