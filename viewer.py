@@ -26,23 +26,23 @@ class Viewer:
         self.task_input_frame.pack(pady=10)
 
         # Task Type Dropdown Menu
-        ttk.Label(self.task_input_frame, text="Task Type:").grid(row=0, column=0, padx=5, pady=5)
+        ttk.Label(self.task_input_frame, text="Task Type:").grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.task_type_var = tk.StringVar(self.task_input_frame)
         task_types = ["Transient Task", "Recurring Task", "Antitask", "Transient Task"]
         # Set the default value for the dropdown menu
         self.task_type_var.set(task_types[0])
         self.task_type_dropdown = ttk.OptionMenu(self.task_input_frame, self.task_type_var, *task_types,  command=self.show_recurring_options)
-        self.task_type_dropdown.grid(row=0, column=1, padx=5, pady=5)
+        self.task_type_dropdown.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
         # Task Description Entry Field
-        ttk.Label(self.task_input_frame, text="Task Description:").grid(row=1, column=0, padx=5, pady=5)
+        ttk.Label(self.task_input_frame, text="Task Description:").grid(row=1, column=0, padx=5, pady=5, sticky="ew")
         self.task_description_entry = ttk.Entry(self.task_input_frame)
-        self.task_description_entry.grid(row=1, column=1, padx=5, pady=5)
+        self.task_description_entry.grid(row=1, column=1, padx=5, pady=5, sticky="ew")
 
         # Duration Entry Field
-        ttk.Label(self.task_input_frame, text="Duration (Hours):").grid(row=2, column=0, padx=5, pady=5)
+        ttk.Label(self.task_input_frame, text="Duration (Hours):").grid(row=2, column=0, padx=5, pady=5, sticky="ew")
         self.duration_entry = ttk.Entry(self.task_input_frame)
-        self.duration_entry.grid(row=2, column=1, padx=5, pady=5)
+        self.duration_entry.grid(row=2, column=1, padx=5, pady=5, sticky="ew")
 
         # Recurrence Pattern Radio Buttons (Initially hidden)
         self.recurrence_pattern_var = tk.StringVar()
@@ -57,7 +57,7 @@ class Viewer:
         self.start_date_label = ttk.Label(self.task_input_frame, text="Start Date:")
         self.start_date_label.grid(row=4, column=0, padx=5, pady=5)
         self.start_date_calendar = Calendar(self.task_input_frame, selectmode="day", date_pattern="yyyy-mm-dd")
-        self.start_date_calendar.grid(row=4, column=1, padx=5, pady=5)
+        self.start_date_calendar.grid(row=4, column=1, padx=5, pady=5, sticky="ew")
 
         # End Date Label (Initially hidden)
         self.end_date_label = ttk.Label(self.task_input_frame, text="End Date:")
@@ -72,12 +72,12 @@ class Viewer:
     def show_recurring_options(self, task_type):
         # Show recurrence pattern options if task type is "Recurring Task"
         if task_type == "Recurring Task":
-            self.recurrence_pattern_frame.grid(row=4, columnspan=2, padx=5, pady=5, sticky="w")
+            self.recurrence_pattern_frame.grid(row=4, columnspan=2, padx=5, pady=5, sticky="ew")
             self.start_date_label.grid(row=5, column=0, padx=5, pady=5)
             self.start_date_calendar.grid(row=5, column=1, padx=5, pady=5)
-            self.end_date_label.grid(row=6, column=0, padx=5, pady=5)
-            self.end_date_calendar.grid(row=6, column=1, padx=5, pady=5)
-            self.add_button.grid(row=7, columnspan=2, padx=5, pady=10)
+            self.end_date_label.grid(row=5, column=2, padx=5, pady=5)
+            self.end_date_calendar.grid(row=5, column=3, padx=5, pady=5)
+            self.add_button.grid(row=6, columnspan=2, padx=5, pady=10)
         else:
             self.start_date_label.grid(row=4, column=0, padx=5, pady=5)
             self.start_date_calendar.grid(row=4, column=1, padx=5, pady=5)
