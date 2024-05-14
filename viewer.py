@@ -25,29 +25,24 @@ class Viewer:
         self.task_input_frame = ttk.Frame(self.root)
         self.task_input_frame.pack(pady=10)
 
-        # Start Date Calendar Selector
-        ttk.Label(self.task_input_frame, text="Start Date:").grid(row=0, column=0, padx=5, pady=5)
-        self.start_date_calendar = Calendar(self.task_input_frame, selectmode="day", date_pattern="yyyy-mm-dd")
-        self.start_date_calendar.grid(row=0, column=1, padx=5, pady=5)
-
-        # Duration Entry Field
-        ttk.Label(self.task_input_frame, text="Duration (Hours):").grid(row=1, column=0, padx=5, pady=5)
-        self.duration_entry = ttk.Entry(self.task_input_frame)
-        self.duration_entry.grid(row=1, column=1, padx=5, pady=5)
-
-        # Task Description Entry Field
-        ttk.Label(self.task_input_frame, text="Task Description:").grid(row=2, column=0, padx=5, pady=5)
-        self.task_description_entry = ttk.Entry(self.task_input_frame)
-        self.task_description_entry.grid(row=2, column=1, padx=5, pady=5)
-
         # Task Type Dropdown Menu
-        ttk.Label(self.task_input_frame, text="Task Type:").grid(row=3, column=0, padx=5, pady=5)
+        ttk.Label(self.task_input_frame, text="Task Type:").grid(row=0, column=0, padx=5, pady=5)
         self.task_type_var = tk.StringVar(self.task_input_frame)
         task_types = ["Transient Task", "Recurring Task", "Antitask", "Transient Task"]
         # Set the default value for the dropdown menu
         self.task_type_var.set(task_types[0])
         self.task_type_dropdown = ttk.OptionMenu(self.task_input_frame, self.task_type_var, *task_types,  command=self.show_recurring_options)
-        self.task_type_dropdown.grid(row=3, column=1, padx=5, pady=5)
+        self.task_type_dropdown.grid(row=0, column=1, padx=5, pady=5)
+
+        # Task Description Entry Field
+        ttk.Label(self.task_input_frame, text="Task Description:").grid(row=1, column=0, padx=5, pady=5)
+        self.task_description_entry = ttk.Entry(self.task_input_frame)
+        self.task_description_entry.grid(row=1, column=1, padx=5, pady=5)
+
+        # Duration Entry Field
+        ttk.Label(self.task_input_frame, text="Duration (Hours):").grid(row=2, column=0, padx=5, pady=5)
+        self.duration_entry = ttk.Entry(self.task_input_frame)
+        self.duration_entry.grid(row=2, column=1, padx=5, pady=5)
 
         # Recurrence Pattern Radio Buttons (Initially hidden)
         self.recurrence_pattern_var = tk.StringVar()
@@ -58,6 +53,12 @@ class Viewer:
         for pattern in ["Daily", "Weekly", "Monthly", "Yearly"]:
             ttk.Radiobutton(self.recurrence_pattern_frame, text=pattern, variable=self.recurrence_pattern_var, value=pattern).pack(side="left", padx=5, pady=5)
 
+        # Start Date Calendar Selector
+        self.start_date_label = ttk.Label(self.task_input_frame, text="Start Date:")
+        self.start_date_label.grid(row=4, column=0, padx=5, pady=5)
+        self.start_date_calendar = Calendar(self.task_input_frame, selectmode="day", date_pattern="yyyy-mm-dd")
+        self.start_date_calendar.grid(row=4, column=1, padx=5, pady=5)
+
         # End Date Label (Initially hidden)
         self.end_date_label = ttk.Label(self.task_input_frame, text="End Date:")
 
@@ -65,16 +66,21 @@ class Viewer:
         self.end_date_calendar = Calendar(self.task_input_frame, selectmode="day", date_pattern="yyyy-mm-dd")
 
         # Button to add task
-        add_button = ttk.Button(self.task_input_frame, text="Add Task", command=self.add_task)
-        add_button.grid(row=6, columnspan=2, padx=5, pady=10)
+        self.add_button = ttk.Button(self.task_input_frame, text="Add Task", command=self.add_task)
+        self.add_button.grid(row=6, columnspan=2, padx=5, pady=10)
 
     def show_recurring_options(self, task_type):
         # Show recurrence pattern options if task type is "Recurring Task"
         if task_type == "Recurring Task":
             self.recurrence_pattern_frame.grid(row=4, columnspan=2, padx=5, pady=5, sticky="w")
-            self.end_date_label.grid(row=5, column=0, padx=5, pady=5)
-            self.end_date_calendar.grid(row=5, column=1, padx=5, pady=5)
+            self.start_date_label.grid(row=5, column=0, padx=5, pady=5)
+            self.start_date_calendar.grid(row=5, column=1, padx=5, pady=5)
+            self.end_date_label.grid(row=6, column=0, padx=5, pady=5)
+            self.end_date_calendar.grid(row=6, column=1, padx=5, pady=5)
+            self.add_button.grid(row=7, columnspan=2, padx=5, pady=10)
         else:
+            self.start_date_label.grid(row=4, column=0, padx=5, pady=5)
+            self.start_date_calendar.grid(row=4, column=1, padx=5, pady=5)
             self.recurrence_pattern_frame.grid_remove()
             self.end_date_calendar.grid_remove()
             self.end_date_label.grid_remove()
