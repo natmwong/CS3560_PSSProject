@@ -22,6 +22,10 @@ class Viewer:
         # Create calendar view for displaying schedule
         self.create_calendar_view()
 
+        # Create "Display Schedule" button
+        self.display_schedule_button = ttk.Button(self.root, text="Display Schedule", command=self.display_schedule)
+        self.display_schedule_button.pack(pady=5)
+
     def create_task_input(self):
         # Frame for task input fields
         self.task_input_frame = ttk.Frame(self.root)
@@ -94,10 +98,6 @@ class Viewer:
         self.calendar_frame = ttk.Frame(self.root)
         self.calendar_frame.pack(pady=10)
 
-        # Button to display schedule
-        display_schedule_button = ttk.Button(self.calendar_frame, text="Display Schedule", command=self.display_schedule)
-        display_schedule_button.pack(pady=5)
-
     def add_task(self):
         # Get task details from input fields
         self.task_type_var.trace_add("write", self.update_task_type_var)
@@ -111,21 +111,31 @@ class Viewer:
         # Call controller method to add the task
         is_valid = self.controller.add_task(start_date, end_date, task_description, task_duration, task_type, recurrence_pattern)
 
-        if not is_valid:
-            messagebox.showerror("Task Conflict", "Task date conflicts with existing task. Please choose a different date or create an Antitask if existing task is Recurring.")
-        else:
+        if is_valid:
             messagebox.showinfo("Task Added", "Task added successfully.")
+        elif task_type == "Antitask":
+            messagebox.showerror("Task Error", "Antitasks may only replace Recurring Tasks. Please select a Recurring Task to replace.")
+        else:
+            messagebox.showerror("Task Conflict", "Task date conflicts with existing task. Please choose a different date or create an Antitask if existing task is Recurring.")
 
         print("Task added successfully")
 
     def display_schedule(self):
         # Clear previous calendar if it exists
-        if hasattr(self, 'calendar'):
-            self.calendar.destroy()
+        if hasattr(self, 'calendar_frame'):
+            self.calendar_frame.destroy()
+
+        # Frame for calendar view
+        self.calendar_frame = ttk.Frame(self.root)
+        self.calendar_frame.pack(pady=10)
 
         # Calendar widget for displaying the schedule
         self.calendar = Calendar(self.calendar_frame, selectmode='day')
         self.calendar.pack(padx=10, pady=5)
+
+        # Button to display task information
+        self.task_info_button = ttk.Button(self.calendar_frame, text="Get Task Information", command=self.task_info)
+        self.task_info_button.pack(pady=20)
 
         # Get all tasks from the model
         tasks = self.model.get_all_tasks()
@@ -134,13 +144,6 @@ class Viewer:
         for task in tasks:
             start_time = datetime.strptime(task.start_time, "%Y-%m-%d")
             self.calendar.calevent_create(start_time, task.task_description, tags=self.task_type_var.get())
-
-        if hasattr(self, 'task_info_button'):
-            self.task_info_button.destroy()
-
-        # Add Button and Label
-        self.task_info_button = ttk.Button(self.calendar_frame, text = "Get Task Information",
-            command = self.task_info).pack(pady = 20)
 
         print("Schedule displayed successfully")
 
@@ -154,12 +157,14 @@ class Viewer:
         # Get all tasks from the model
         tasks = self.model.get_all_tasks()
 
-        for task in tasks:
-            # Convert the task start time to a datetime object
-            task_start_time = datetime.strptime(task.start_time, "%Y-%m-%d")
+        # Check if there are tasks on the selected date
+        tasks_on_selected_date = [task for task in tasks if datetime.strptime(task.start_time, "%Y-%m-%d").date() == selected_date.date()]
 
-            # Check if the task start time matches the selected date
-            if task_start_time.strftime("%Y-%m-%d") == selected_date.strftime("%Y-%m-%d"):
+        if tasks_on_selected_date:
+            for task in tasks_on_selected_date:
+                # Convert the task start time to a datetime object
+                task_start_time = datetime.strptime(task.start_time, "%Y-%m-%d")
+
                 # If there's a match, create a new popup window to display task information
                 popup = tk.Toplevel(self.root)
                 popup.title("Task Information")
@@ -168,6 +173,8 @@ class Viewer:
                 task_info = f"Task Description: {task.task_description}\nTask Type: {task.task_type}\nDate: {task.start_time}\nDuration: {task.duration} minutes"
                 ttk.Label(popup, text=task_info).pack(padx=10, pady=10)
                 print(task_info)
+        else:
+            messagebox.showinfo("No Tasks", "There are no tasks on the selected date.")
 
     def run(self):
         # Run the Tkinter main loop
