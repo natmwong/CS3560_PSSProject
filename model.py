@@ -45,19 +45,20 @@ class Model:
             return False
 
     def validate_overlap(self, new_task):
-        # Check for overlap with existing tasks
-        new_start_time = datetime.strptime(new_task.start_time, "%I:%M %p")
-        new_end_time = new_start_time + timedelta(minutes=new_task.duration)
-
+        new_start_time = datetime.strptime(new_task.start_time, "%Y-%m-%d")
+        new_duration = int(new_task.duration)  # Convert duration to integer
+        new_end_time = new_start_time + timedelta(minutes=new_duration)
+        
         for task in self.tasks:
-            task_start_time = datetime.strptime(task.start_time, "%I:%M %p")
-            task_end_time = task_start_time + timedelta(minutes=task.duration)
+            task_start_time = datetime.strptime(task.start_time, "%Y-%m-%d %H:%M:%S")
+            task_duration = int(task.duration)  # Convert duration to integer
+            task_end_time = task_start_time + timedelta(minutes=task_duration)
 
             # Check if new task overlaps with existing task
             if (task_start_time <= new_start_time < task_end_time) or (new_start_time <= task_start_time < new_end_time):
                 # Overlap detected
                 return False
-        
+            
         # No overlap detected
         return True
     

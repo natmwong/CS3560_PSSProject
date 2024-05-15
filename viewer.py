@@ -40,7 +40,7 @@ class Viewer:
         self.task_description_entry.grid(row=1, column=1, padx=5, pady=5, sticky="ew")
 
         # Duration Entry Field
-        ttk.Label(self.task_input_frame, text="Duration (Hours):").grid(row=2, column=0, padx=5, pady=5, sticky="ew")
+        ttk.Label(self.task_input_frame, text="Duration (Minutes):").grid(row=2, column=0, padx=5, pady=5, sticky="ew")
         self.duration_entry = ttk.Entry(self.task_input_frame)
         self.duration_entry.grid(row=2, column=1, padx=5, pady=5, sticky="ew")
 
@@ -103,11 +103,12 @@ class Viewer:
         start_date = self.start_date_calendar.get_date()
         end_date = self.end_date_calendar.get_date()
         task_description = self.task_description_entry.get()
+        task_duration = self.duration_entry.get()
         task_type = self.task_type_var.get()
         recurrence_pattern = self.recurrence_pattern_var.get()
 
         # Call controller method to add the task
-        self.controller.add_task(start_date, end_date, task_description, task_type, recurrence_pattern)
+        self.controller.add_task(start_date, end_date, task_description, task_duration, task_type, recurrence_pattern)
 
     def display_schedule(self):
         # Clear existing calendar
