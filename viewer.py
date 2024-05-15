@@ -108,15 +108,21 @@ class Viewer:
         task_type = self.task_type_var.get()
         recurrence_pattern = self.recurrence_pattern_var.get()
 
-        # Call controller method to add the task
-        is_valid = self.controller.add_task(start_date, end_date, task_description, task_duration, task_type, recurrence_pattern)
-
-        if is_valid:
-            messagebox.showinfo("Task Added", "Task added successfully.")
-        elif task_type == "Antitask":
-            messagebox.showerror("Task Error", "Antitasks may only replace Recurring Tasks. Please select a Recurring Task to replace.")
+        # Check if task description or task duration is empty
+        if task_description == '' or task_duration == '':
+            messagebox.showerror("Missing Information", "Please fill out all task information fields.")
+        elif task_duration.isnumeric() == False:
+            messagebox.showerror("Invalid Duration", "Duration must be in a number in minutes.")
         else:
-            messagebox.showerror("Task Conflict", "Task date conflicts with existing task. Please choose a different date or create an Antitask if existing task is Recurring.")
+            # Call controller method to add the task
+            is_valid = self.controller.add_task(start_date, end_date, task_description, task_duration, task_type, recurrence_pattern)
+
+            if is_valid:
+                messagebox.showinfo("Task Added", "Task added successfully.")
+            elif task_type == "Antitask":
+                messagebox.showerror("Task Error", "Antitasks may only replace Recurring Tasks. Please select a Recurring Task to replace.")
+            else:
+                messagebox.showerror("Task Conflict", "Task date conflicts with existing task. Please choose a different date or create an Antitask if existing task is Recurring.")
 
         print("Task added successfully")
 
