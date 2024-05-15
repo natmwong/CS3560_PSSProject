@@ -4,8 +4,10 @@ from tkinter import messagebox
 from datetime import datetime
 from tkcalendar import Calendar
 from functools import partial
+from recurringTask import RecurringTask
 
 class Viewer:
+
     def __init__(self, controller, model):
         self.controller = controller
         self.model = model
@@ -29,7 +31,6 @@ class Viewer:
         ttk.Label(self.task_input_frame, text="Task Type:").grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         self.task_type_var = tk.StringVar(self.task_input_frame)
         task_types = ["Transient Task", "Transient Task", "Recurring Task", "Antitask"]
-        # Set the default value for the dropdown menu
         self.task_type_var.set(task_types[0])
         self.task_type_dropdown = ttk.OptionMenu(self.task_input_frame, self.task_type_var, *task_types, command=self.show_recurring_options)
         self.task_type_dropdown.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
@@ -48,7 +49,6 @@ class Viewer:
         self.recurrence_pattern_var = tk.StringVar()
         self.recurrence_pattern_var.set("Daily")  # Default value
         self.recurrence_pattern_frame = ttk.Frame(self.task_input_frame)
-
         ttk.Label(self.recurrence_pattern_frame, text="Recurrence Pattern:").pack(side="left", padx=5, pady=5)
         for pattern in ["Daily", "Weekly", "Monthly", "Yearly"]:
             ttk.Radiobutton(self.recurrence_pattern_frame, text=pattern, variable=self.recurrence_pattern_var, value=pattern).pack(side="left", padx=5, pady=5)
@@ -61,7 +61,6 @@ class Viewer:
 
         # End Date Label (Initially hidden)
         self.end_date_label = ttk.Label(self.task_input_frame, text="End Date:")
-
         # End Date Calendar Selector (Initially hidden)
         self.end_date_calendar = Calendar(self.task_input_frame, selectmode="day", date_pattern="yyyy-mm-dd")
 
@@ -70,8 +69,8 @@ class Viewer:
         self.add_button.grid(row=6, columnspan=2, padx=5, pady=10)
 
     def update_task_type_var(self, *args):
-            # Update task_type_var with the selected value from the option menu
-            self.task_type_var.set(self.task_type_var.get())
+        # Update task_type_var with the selected value from the option menu
+        self.task_type_var.set(self.task_type_var.get())
 
     def show_recurring_options(self, task_type):
         # Show recurrence pattern options if task type is "Recurring Task"
@@ -103,7 +102,7 @@ class Viewer:
         # Get task details from input fields
         self.task_type_var.trace_add("write", self.update_task_type_var)
         start_date = self.start_date_calendar.get_date()
-        end_date = self.end_date_calendar.get_date()
+        end_date = self.end_date_calendar.get_date() if self.task_type_var.get() == "Recurring Task" else start_date
         task_description = self.task_description_entry.get()
         task_duration = self.duration_entry.get()
         task_type = self.task_type_var.get()
@@ -114,6 +113,10 @@ class Viewer:
         print("Task added successfully")
 
     def display_schedule(self):
+        # Clear previous calendar if it exists
+        if hasattr(self, 'calendar'):
+            self.calendar.destroy()
+
         # Calendar widget for displaying the schedule
         self.calendar = Calendar(self.calendar_frame, selectmode='none')
         self.calendar.pack(padx=10, pady=5)
@@ -123,11 +126,8 @@ class Viewer:
 
         # Display tasks on the calendar
         for task in tasks:
-            # Convert start time to datetime object
             start_time = datetime.strptime(task.start_time, "%Y-%m-%d")
-
-            # Add task details to the calendar
-            self.calendar.calevent_create(start_time, text=task.task_description + "/nDuration: " + task.duration + " minutes")
+            self.calendar.calevent_create(start_time, task.task_description, tags=self.task_type_var.get())
 
         print("Schedule displayed successfully")
 

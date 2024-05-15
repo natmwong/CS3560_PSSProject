@@ -5,8 +5,8 @@ class AntiTask(Task):
 
     # referenced_task is the recurring task that the anti-task is associated with
     # anti-task will replace one instance of a recurring task
-    def __init__(self, start_time, duration, task_description):
-        super().__init__(start_time, duration, task_description)
+    def __init__(self, start_time, duration, task_description, task_type):
+        super().__init__(start_time, duration, task_description, task_type)
 
     # Replace the recurring task instance with the anti-task
     def replace_recurring_task_instance(self, model):
