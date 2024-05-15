@@ -16,21 +16,17 @@ class RecurringTask(Task):
         while current_date <= self.end_date:
             if self.recurrence_pattern == "Weekly":
                 if current_date.weekday() == datetime.strptime(self.start_time, "%Y-%m-%d").weekday():
-                    #instance_start_time = datetime.combine(current_date, datetime.strptime(self.start_time, "%Y-%m-%d").time())
                     instance_start_time = current_date.strftime("%Y-%m-%d")  # Convert datetime to string
                     instances.append(Task(instance_start_time, self.duration, self.task_description, self.task_type))
             elif self.recurrence_pattern == "Daily":
-                #instance_start_time = datetime.combine(current_date, datetime.strptime(self.start_time, "%Y-%m-%d").time())
                 instance_start_time = current_date.strftime("%Y-%m-%d")  # Convert datetime to string
                 instances.append(Task(instance_start_time, self.duration, self.task_description, self.task_type))
             elif self.recurrence_pattern == "Monthly":
                 if current_date.day == datetime.strptime(self.start_time, "%Y-%m-%d").day:
-                    #instance_start_time = datetime.combine(current_date, datetime.strptime(self.start_time, "%Y-%m-%d").time())
                     instance_start_time = current_date.strftime("%Y-%m-%d")  # Convert datetime to string
                     instances.append(Task(instance_start_time, self.duration, self.task_description, self.task_type))
             elif self.recurrence_pattern == "Yearly":
                 if current_date.month == datetime.strptime(self.start_time, "%Y-%m-%d").month and current_date.day == datetime.strptime(self.start_time, "%Y-%m-%d").day:
-                    #instance_start_time = datetime.combine(current_date, datetime.strptime(self.start_time, "%Y-%m-%d").time())
                     instance_start_time = current_date.strftime("%Y-%m-%d")  # Convert datetime to string
                     instances.append(Task(instance_start_time, self.duration, self.task_description, self.task_type))
             current_date += timedelta(days=1)
