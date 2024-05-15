@@ -14,9 +14,9 @@ class Model:
             if task.task_type == "Antitask":
                 # Find the recurring task with the same start time
                 for i, existing_task in enumerate(self.tasks):
-                    if existing_task.task_type == "Recurring Task" and existing_task.start_time == task.start_time:
+                    if existing_task.task_type == "Recurring Task" and existing_task.start_date == task.start_date:
                         # Replace the recurring task with the anti-task
-                        self.tasks[i] = AntiTask(task.start_time, task.duration, task.task_description, task.task_type)
+                        self.tasks[i] = AntiTask(task.start_date, task.duration, task.task_description, task.task_type)
                         return True  # Anti-task successfully replaced recurring task
                 # If no recurring task is found, task is invalid
                 return False
@@ -27,20 +27,20 @@ class Model:
         else:
             return False
 
-    def edit_task(self, task, new_start_time, new_duration, new_task_type, **kwargs):
+    def edit_task(self, task, new_start_date, new_duration, new_task_type, **kwargs):
         if task in self.tasks:
             if isinstance(task, Task):
                 # Call edit_task method of the Task class
-                task.edit_task(new_start_time, new_duration, new_task_type)
+                task.edit_task(new_start_date, new_duration, new_task_type)
             elif isinstance(task, RecurringTask):
                 # Call edit_task method of the RecurringTask class
-                task.edit_task(new_start_time, new_duration, new_task_type, **kwargs)
+                task.edit_task(new_start_date, new_duration, new_task_type, **kwargs)
             elif isinstance(task, TransientTask):
                 # Call edit_task method of the TransientTask class
-                task.edit_task(new_start_time, new_duration, new_task_type)
+                task.edit_task(new_start_date, new_duration, new_task_type)
             elif isinstance(task, AntiTask):
                 # Call edit_task method of the AntiTask class
-                task.edit_task(new_start_time, new_duration, new_task_type, **kwargs)
+                task.edit_task(new_start_date, new_duration, new_task_type, **kwargs)
 
             return True
         else:
@@ -55,26 +55,26 @@ class Model:
             return False
 
     def validate_overlap(self, new_task):
-        if isinstance(new_task.start_time, datetime):
-            new_start_time = new_task.start_time
+        if isinstance(new_task.start_date, datetime):
+            new_start_date = new_task.start_date
         else:
-            new_start_time = datetime.strptime(new_task.start_time, "%Y-%m-%d")
+            new_start_date = datetime.strptime(new_task.start_date, "%Y-%m-%d")
         
         new_duration = int(new_task.duration)
 
-        new_end_time = new_start_time + timedelta(minutes=new_duration)
+        new_end_time = new_start_date + timedelta(minutes=new_duration)
         
         for task in self.tasks:
-            if isinstance(task.start_time, datetime):
-                task_start_time = task.start_time
+            if isinstance(task.start_date, datetime):
+                task_start_date = task.start_date
             else:
-                task_start_time = datetime.strptime(task.start_time, "%Y-%m-%d")
+                task_start_date = datetime.strptime(task.start_date, "%Y-%m-%d")
             
             task_duration = int(task.duration)
-            task_end_time = task_start_time + timedelta(minutes=task_duration)
+            task_end_time = task_start_date + timedelta(minutes=task_duration)
 
             # Check if new task overlaps with existing task
-            if (task_start_time <= new_start_time < task_end_time) or (new_start_time <= task_start_time < new_end_time):
+            if (task_start_date <= new_start_date < task_end_time) or (new_start_date <= task_start_date < new_end_time):
                 if new_task.task_type == "Antitask":
                     # Anti Task can overlap with any task
                     continue
@@ -87,13 +87,13 @@ class Model:
         with open(filename, 'w') as file:
             for task in self.tasks:
                 if isinstance(task, RecurringTask):
-                    file.write(f"{task.start_time},{task.duration},{task.task_type},{task.recurrence_pattern},{task.start_date},{task.end_date}\n")
+                    file.write(f"{task.start_date},{task.duration},{task.task_type},{task.recurrence_pattern},{task.start_date},{task.end_date}\n")
                 elif isinstance(task, TransientTask):
-                    file.write(f"{task.start_time},{task.duration},{task.task_type}\n")
+                    file.write(f"{task.start_date},{task.duration},{task.task_type}\n")
                 elif isinstance(task, AntiTask):
-                    file.write(f"{task.start_time},{task.duration},{task.task_type},{task.referenced_task}\n")
+                    file.write(f"{task.start_date},{task.duration},{task.task_type},{task.referenced_task}\n")
                 else:
-                    file.write(f"{task.start_time},{task.duration},{task.task_type}\n")
+                    file.write(f"{task.start_date},{task.duration},{task.task_type}\n")
 
     def load_tasks_from_file(self, filename):
         # Load tasks from a file
