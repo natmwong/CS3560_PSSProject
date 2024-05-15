@@ -118,7 +118,7 @@ class Viewer:
             self.calendar.destroy()
 
         # Calendar widget for displaying the schedule
-        self.calendar = Calendar(self.calendar_frame, selectmode='none')
+        self.calendar = Calendar(self.calendar_frame, selectmode='day')
         self.calendar.pack(padx=10, pady=5)
 
         # Get all tasks from the model
@@ -129,7 +129,60 @@ class Viewer:
             start_time = datetime.strptime(task.start_time, "%Y-%m-%d")
             self.calendar.calevent_create(start_time, task.task_description, tags=self.task_type_var.get())
 
+        # Add Button and Label
+        ttk.Button(self.calendar_frame, text = "Get Task Information",
+            command = self.task_info).pack(pady = 20)
+
         print("Schedule displayed successfully")
+
+    def task_info(self):
+        # Get the selected date from the calendar
+        selected_date_str = self.calendar.get_date()
+
+        # Convert the selected date to a datetime object
+        selected_date = datetime.strptime(selected_date_str, "%m/%d/%y")
+
+        # Get all tasks from the model
+        tasks = self.model.get_all_tasks()
+
+        for task in tasks:
+            # Convert the task start time to a datetime object
+            task_start_time = datetime.strptime(task.start_time, "%Y-%m-%d")
+
+            # Check if the task start time matches the selected date
+            if task_start_time.strftime("%Y-%m-%d") == selected_date.strftime("%Y-%m-%d"):
+                # If there's a match, create a new popup window to display task information
+                popup = tk.Toplevel(self.root)
+                popup.title("Task Information")
+
+                # Display task information in the popup window
+                task_info = f"Task Description: {task.task_description}\nTask Type: {task.task_type}\nDate: {task.start_time}\nDuration: {task.duration} minutes"
+                ttk.Label(popup, text=task_info).pack(padx=10, pady=10)
+                print(task_info)
+
+    ''' 
+    def task_info(self):
+        # Get the selected date from the calendar
+        selected_date_str = self.calendar.get_date()
+
+        # Convert the selected date to a datetime object
+        selected_date = datetime.strptime(selected_date_str, "%m/%d/%y")
+
+        # Get all tasks from the model
+        tasks = self.model.get_all_tasks()
+
+        for task in tasks:
+            # Convert the task start time to a datetime object
+            task_start_time = datetime.strptime(task.start_time, "%Y-%m-%d")
+
+            # Check if the task start time matches the selected date
+            if task_start_time.strftime("%Y-%m-%d") == selected_date.strftime("%Y-%m-%d"):
+                # If there's a match, display task information
+                task_info = f"Task Description: {task.task_description}\nTask Type: {task.task_type}\nStart Time: {task.start_time}\nDuration: {task.duration}"
+                self.task_label = ttk.Label(self.calendar_frame, text = task_info)
+                self.task_label.pack(pady = 20)
+                print(task_info)
+    '''
 
     def run(self):
         # Run the Tkinter main loop
