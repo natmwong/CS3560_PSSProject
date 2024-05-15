@@ -45,21 +45,28 @@ class Model:
             return False
 
     def validate_overlap(self, new_task):
-        new_start_time = datetime.strptime(new_task.start_time, "%Y-%m-%d")
-        new_duration = int(new_task.duration)  # Convert duration to integer
+        if isinstance(new_task.start_time, datetime):
+            new_start_time = new_task.start_time
+        else:
+            new_start_time = datetime.strptime(new_task.start_time, "%Y-%m-%d")
+        
+        new_duration = int(new_task.duration)
+
         new_end_time = new_start_time + timedelta(minutes=new_duration)
         
         for task in self.tasks:
-            task_start_time = datetime.strptime(task.start_time, "%Y-%m-%d %H:%M:%S")
-            task_duration = int(task.duration)  # Convert duration to integer
+            if isinstance(task.start_time, datetime):
+                task_start_time = task.start_time
+            else:
+                task_start_time = datetime.strptime(task.start_time, "%Y-%m-%d")
+            
+            task_duration = int(task.duration)
             task_end_time = task_start_time + timedelta(minutes=task_duration)
 
             # Check if new task overlaps with existing task
             if (task_start_time <= new_start_time < task_end_time) or (new_start_time <= task_start_time < new_end_time):
                 # Overlap detected
                 return False
-            
-        # No overlap detected
         return True
     
     def save_tasks_to_file(self, filename):
@@ -87,3 +94,6 @@ class Model:
                 elif len(task_data) == 6:
                     task = RecurringTask(task_data[0], int(task_data[1]), task_data[2], task_data[3], task_data[4], task_data[5])
                 self.add_task(task)
+
+    def get_all_tasks(self):
+        return self.tasks

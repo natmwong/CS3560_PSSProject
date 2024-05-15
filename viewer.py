@@ -31,7 +31,7 @@ class Viewer:
         task_types = ["Transient Task", "Transient Task", "Recurring Task", "Antitask"]
         # Set the default value for the dropdown menu
         self.task_type_var.set(task_types[0])
-        self.task_type_dropdown = ttk.OptionMenu(self.task_input_frame, self.task_type_var, *task_types,  command=self.show_recurring_options)
+        self.task_type_dropdown = ttk.OptionMenu(self.task_input_frame, self.task_type_var, *task_types, command=self.show_recurring_options)
         self.task_type_dropdown.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
         # Task Description Entry Field
@@ -69,6 +69,10 @@ class Viewer:
         self.add_button = ttk.Button(self.task_input_frame, text="Add Task", command=self.add_task)
         self.add_button.grid(row=6, columnspan=2, padx=5, pady=10)
 
+    def update_task_type_var(self, *args):
+            # Update task_type_var with the selected value from the option menu
+            self.task_type_var.set(self.task_type_var.get())
+
     def show_recurring_options(self, task_type):
         # Show recurrence pattern options if task type is "Recurring Task"
         if task_type == "Recurring Task":
@@ -78,6 +82,7 @@ class Viewer:
             self.end_date_label.grid(row=5, column=2, padx=5, pady=5)
             self.end_date_calendar.grid(row=5, column=3, padx=5, pady=5)
             self.add_button.grid(row=6, columnspan=2, padx=5, pady=10)
+            self.task_type_var.trace_add("write", self.update_task_type_var)
         else:
             self.start_date_label.grid(row=4, column=0, padx=5, pady=5)
             self.start_date_calendar.grid(row=4, column=1, padx=5, pady=5)
@@ -94,12 +99,9 @@ class Viewer:
         display_schedule_button = ttk.Button(self.calendar_frame, text="Display Schedule", command=self.display_schedule)
         display_schedule_button.pack(pady=5)
 
-        # Calendar widget for displaying the schedule
-        self.calendar = Calendar(self.calendar_frame, selectmode='none')
-        self.calendar.pack(padx=10, pady=5)
-
     def add_task(self):
         # Get task details from input fields
+        self.task_type_var.trace_add("write", self.update_task_type_var)
         start_date = self.start_date_calendar.get_date()
         end_date = self.end_date_calendar.get_date()
         task_description = self.task_description_entry.get()
@@ -109,10 +111,12 @@ class Viewer:
 
         # Call controller method to add the task
         self.controller.add_task(start_date, end_date, task_description, task_duration, task_type, recurrence_pattern)
+        print("Task added successfully")
 
     def display_schedule(self):
-        # Clear existing calendar
-        self.calendar.delete('all')
+        # Calendar widget for displaying the schedule
+        self.calendar = Calendar(self.calendar_frame, selectmode='none')
+        self.calendar.pack(padx=10, pady=5)
 
         # Get all tasks from the model
         tasks = self.model.get_all_tasks()
@@ -120,10 +124,12 @@ class Viewer:
         # Display tasks on the calendar
         for task in tasks:
             # Convert start time to datetime object
-            start_time = datetime.strptime(task.start_time, "%Y-%m-%d %H:%M:%S")
+            start_time = datetime.strptime(task.start_time, "%Y-%m-%d")
 
             # Add task details to the calendar
-            self.calendar.calevent_create(start_time, duration=task.duration, text=task.task_description, tags=task.task_type)
+            self.calendar.calevent_create(start_time, text=task.task_description + "/nDuration: " + task.duration + " minutes")
+
+        print("Schedule displayed successfully")
 
     def run(self):
         # Run the Tkinter main loop

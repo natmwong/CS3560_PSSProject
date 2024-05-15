@@ -17,6 +17,10 @@ class Controller:
             recurringTasks = task.generate_instances()
             for recurringTask in recurringTasks:
                 self.model.add_task(recurringTask)
+                print(recurringTask)
         else:
             task = AntiTask(start_date, task_duration, task_description)
             self.model.add_task(task)
+
+        for task in self.model.tasks:
+            print(task.task_description, task.start_time, task.duration)

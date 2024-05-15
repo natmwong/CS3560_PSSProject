@@ -8,32 +8,32 @@ class RecurringTask(Task):
     def __init__(self, start_time, duration, task_description, recurrence_pattern, end_date):
         super().__init__(start_time, duration, task_description)
         self.recurrence_pattern = recurrence_pattern
-        self.end_date = end_date
+        self.end_date = datetime.strptime(end_date, "%Y-%m-%d")
 
-    # Generate instances of the recurring task based on the recurrence pattern from start_time to end_date
     def generate_instances(self):
         instances = []
-        current_date = self.start_time
+        current_date = datetime.strptime(self.start_time, "%Y-%m-%d")
         while current_date <= self.end_date:
             if self.recurrence_pattern == "Weekly":
-                if current_date.weekday() == self.start_time.weekday():
-                    instance_start_time = datetime.combine(current_date, datetime.strptime(self.start_time, "%I:%M %p").time())
+                if current_date.weekday() == datetime.strptime(self.start_time, "%Y-%m-%d").weekday():
+                    instance_start_time = datetime.combine(current_date, datetime.strptime(self.start_time, "%Y-%m-%d").time())
                     instances.append(Task(instance_start_time, self.duration, self.task_description))
             elif self.recurrence_pattern == "Daily":
-                instance_start_time = datetime.combine(current_date, datetime.strptime(self.start_time, "%I:%M %p").time())
+                instance_start_time = datetime.combine(current_date, datetime.strptime(self.start_time, "%Y-%m-%d").time())
                 instances.append(Task(instance_start_time, self.duration, self.task_description))
             elif self.recurrence_pattern == "Monthly":
-                if current_date.day == self.start_time.day:
-                    instance_start_time = datetime.combine(current_date, datetime.strptime(self.start_time, "%I:%M %p").time())
+                if current_date.day == datetime.strptime(self.start_time, "%Y-%m-%d").day:
+                    instance_start_time = datetime.combine(current_date, datetime.strptime(self.start_time, "%Y-%m-%d").time())
                     instances.append(Task(instance_start_time, self.duration, self.task_description))
             elif self.recurrence_pattern == "Yearly":
-                if current_date.month == self.start_time.month and current_date.day == self.start_time.day:
-                    instance_start_time = datetime.combine(current_date, datetime.strptime(self.start_time, "%I:%M %p").time())
+                if current_date.month == datetime.strptime(self.start_time, "%Y-%m-%d").month and current_date.day == datetime.strptime(self.start_time, "%Y-%m-%d").day:
+                    instance_start_time = datetime.combine(current_date, datetime.strptime(self.start_time, "%Y-%m-%d").time())
                     instances.append(Task(instance_start_time, self.duration, self.task_description))
             current_date += timedelta(days=1)
             if current_date > self.end_date:  # Check if current_date exceeds the end_date
                 break  # Exit the loop if current_date exceeds the end_date
         return instances
+
 
     # Override methods
     def edit_task(self, new_start_time, new_duration, new_task_description, new_recurrence_pattern, new_end_date):
