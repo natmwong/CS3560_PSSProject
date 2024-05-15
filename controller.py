@@ -11,16 +11,18 @@ class Controller:
     def add_task(self, start_date, end_date, task_description, task_duration, task_type, recurrence_pattern):
         if task_type == "Transient Task":
             task = TransientTask(start_date, task_duration, task_description, task_type)
-            self.model.add_task(task)
+            is_valid = self.model.add_task(task)
         elif task_type == "Recurring Task":
             task = RecurringTask(start_date, task_duration, task_description, task_type, recurrence_pattern, end_date)
             recurringTasks = task.generate_instances()
             for recurringTask in recurringTasks:
-                self.model.add_task(recurringTask)
+                is_valid = self.model.add_task(recurringTask)
                 print(recurringTask)
         else:
             task = AntiTask(start_date, task_duration, task_description, task_type)
-            self.model.add_task(task)
+            is_valid = self.model.add_task(task)
 
         for task in self.model.tasks:
             print(task.task_description, task.start_time, task.duration, task.task_type)
+        
+        return is_valid

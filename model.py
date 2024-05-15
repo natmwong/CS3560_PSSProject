@@ -11,9 +11,19 @@ class Model:
     def add_task(self, task):
         # Check for overlap before adding the task
         if self.validate_overlap(task):
-            # Add task to the list
-            self.tasks.append(task)
-            return True
+            if task.task_type == "Antitask":
+                # Find the recurring task with the same start time
+                for i, existing_task in enumerate(self.tasks):
+                    if existing_task.task_type == "Recurring Task" and existing_task.start_time == task.start_time:
+                        # Replace the recurring task with the anti-task
+                        self.tasks[i] = AntiTask(task.start_time, task.duration, task.task_description, task.task_type)
+                        return True  # Anti-task successfully replaced recurring task
+                # If no recurring task is found, task is invalid
+                return False
+            else:
+                # Add task to the list
+                self.tasks.append(task)
+                return True
         else:
             return False
 
@@ -65,6 +75,9 @@ class Model:
 
             # Check if new task overlaps with existing task
             if (task_start_time <= new_start_time < task_end_time) or (new_start_time <= task_start_time < new_end_time):
+                if new_task.task_type == "Antitask":
+                    # Anti Task can overlap with any task
+                    continue
                 # Overlap detected
                 return False
         return True

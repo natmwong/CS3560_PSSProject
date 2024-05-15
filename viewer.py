@@ -109,7 +109,13 @@ class Viewer:
         recurrence_pattern = self.recurrence_pattern_var.get()
 
         # Call controller method to add the task
-        self.controller.add_task(start_date, end_date, task_description, task_duration, task_type, recurrence_pattern)
+        is_valid = self.controller.add_task(start_date, end_date, task_description, task_duration, task_type, recurrence_pattern)
+
+        if not is_valid:
+            messagebox.showerror("Task Conflict", "Task date conflicts with existing task. Please choose a different date or create an Antitask if existing task is Recurring.")
+        else:
+            messagebox.showinfo("Task Added", "Task added successfully.")
+
         print("Task added successfully")
 
     def display_schedule(self):
@@ -129,8 +135,11 @@ class Viewer:
             start_time = datetime.strptime(task.start_time, "%Y-%m-%d")
             self.calendar.calevent_create(start_time, task.task_description, tags=self.task_type_var.get())
 
+        if hasattr(self, 'task_info_button'):
+            self.task_info_button.destroy()
+
         # Add Button and Label
-        ttk.Button(self.calendar_frame, text = "Get Task Information",
+        self.task_info_button = ttk.Button(self.calendar_frame, text = "Get Task Information",
             command = self.task_info).pack(pady = 20)
 
         print("Schedule displayed successfully")
