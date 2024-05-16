@@ -27,25 +27,6 @@ class Model:
         else:
             return False
 
-    def edit_task(self, task, new_start_date, new_duration, new_task_type, **kwargs):
-        if task in self.tasks:
-            if isinstance(task, Task):
-                # Call edit_task method of the Task class
-                task.edit_task(new_start_date, new_duration, new_task_type)
-            elif isinstance(task, RecurringTask):
-                # Call edit_task method of the RecurringTask class
-                task.edit_task(new_start_date, new_duration, new_task_type, **kwargs)
-            elif isinstance(task, TransientTask):
-                # Call edit_task method of the TransientTask class
-                task.edit_task(new_start_date, new_duration, new_task_type)
-            elif isinstance(task, AntiTask):
-                # Call edit_task method of the AntiTask class
-                task.edit_task(new_start_date, new_duration, new_task_type, **kwargs)
-
-            return True
-        else:
-            return False
-
     def delete_task(self, task):
         # Delete task from the list
         if task in self.tasks:
