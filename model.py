@@ -16,7 +16,7 @@ class Model:
                 for i, existing_task in enumerate(self.tasks):
                     if existing_task.task_type == "Recurring Task" and existing_task.start_date == task.start_date:
                         # Replace the recurring task with the anti-task
-                        self.tasks[i] = AntiTask(task.start_date, task.duration, task.task_description, task.task_type)
+                        self.tasks[i] = AntiTask(task.start_date, task.start_time, task.duration, task.task_description, task.task_type)
                         return True  # Anti-task successfully replaced recurring task
                 # If no recurring task is found, task is invalid
                 return False
@@ -55,28 +55,18 @@ class Model:
             return False
 
     def validate_overlap(self, new_task):
-        if isinstance(new_task.start_date, datetime):
-            new_start_date = new_task.start_date
-        else:
-            new_start_date = datetime.strptime(new_task.start_date, "%Y-%m-%d")
-        
-        new_duration = int(new_task.duration)
+        new_start_time = datetime.strptime(new_task.start_time, "%H:%M")
+        new_end_time = new_start_time + timedelta(minutes=new_task.duration)
 
-        new_end_time = new_start_date + timedelta(minutes=new_duration)
-        
         for task in self.tasks:
-            if isinstance(task.start_date, datetime):
-                task_start_date = task.start_date
-            else:
-                task_start_date = datetime.strptime(task.start_date, "%Y-%m-%d")
-            
-            task_duration = int(task.duration)
-            task_end_time = task_start_date + timedelta(minutes=task_duration)
-
+            task_start_time = datetime.strptime(task.start_time, "%H:%M")
+            task_end_time = task_start_time + timedelta(minutes=task.duration)
             # Check if new task overlaps with existing task
-            if (task_start_date <= new_start_date < task_end_time) or (new_start_date <= task_start_date < new_end_time):
+            if (task_start_time <= new_start_time < task_end_time) or (new_start_time <= task_start_time < new_end_time):
                 if new_task.task_type == "Antitask":
                     # Anti Task can overlap with any task
+                    continue
+                elif new_task.task_type == "Recurring Task":
                     continue
                 # Overlap detected
                 return False

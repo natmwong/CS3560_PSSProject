@@ -13,7 +13,7 @@ class RecurringTask(Task):
     def generate_instances(self):
         instances = []
         current_date = datetime.strptime(self.start_date, "%Y-%m-%d")
-        start_time = datetime.strptime(self.start_time, "%H:%M")
+        start_time = self.start_time
         while current_date <= self.end_date:
             if self.recurrence_pattern == "Weekly":
                 if current_date.weekday() == datetime.strptime(self.start_date, "%Y-%m-%d").weekday():
