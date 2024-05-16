@@ -125,12 +125,14 @@ class Viewer:
             # Call controller method to add the task
             is_valid = self.controller.add_task(start_date, start_time, end_date, task_description, task_duration, task_type, recurrence_pattern)
             if is_valid:
-                messagebox.showinfo("Task Added", "Task added successfully.")
+                if task_type == "Antitask":
+                    messagebox.showinfo("Antitask Replaced", "Antitask replaced Recurring Task successfully.")
+                else:
+                    messagebox.showinfo("Task Added", "Task added successfully.")
             elif task_type == "Antitask":
                 messagebox.showerror("Task Error", "Antitasks may only replace Recurring Tasks. Please select a Recurring Task to replace.")
             else:
                 messagebox.showerror("Task Conflict", "Task date conflicts with existing task. Please choose a different date or create an Antitask if existing task is Recurring.")
-        print("Task added successfully")
 
     def is_valid_time(self, time_str):
         try:
@@ -196,6 +198,7 @@ class Viewer:
 
         else:
             messagebox.showinfo("No Tasks", "There are no tasks on the selected date.")
+
     def edit_task(self, task):
         # Create a new popup window for editing task information
         edit_popup = tk.Toplevel(self.root)
@@ -233,6 +236,7 @@ class Viewer:
         # Button to update the task
         update_button = ttk.Button(edit_popup, text="Update", command=update_task)
         update_button.pack(pady=10)
+
 
     def run(self):
         # Run the Tkinter main loop

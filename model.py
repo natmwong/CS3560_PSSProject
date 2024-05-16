@@ -68,6 +68,9 @@ class Model:
                     continue
                 elif new_task.task_type == "Recurring Task":
                     continue
+                elif new_task.start_date != task.start_date:
+                    # Tasks have different start dates, no overlap
+                    continue
                 # Overlap detected
                 return False
         return True
