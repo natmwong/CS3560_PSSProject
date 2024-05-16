@@ -12,6 +12,7 @@ class RecurringTask(Task):
 
     def generate_instances(self):
         instances = []
+<<<<<<< Updated upstream
         current_date = datetime.strptime(self.start_time, "%Y-%m-%d")
         while current_date <= self.end_date:
             if self.recurrence_pattern == "Weekly":
@@ -29,6 +30,25 @@ class RecurringTask(Task):
                 if current_date.month == datetime.strptime(self.start_time, "%Y-%m-%d").month and current_date.day == datetime.strptime(self.start_time, "%Y-%m-%d").day:
                     instance_start_time = datetime.combine(current_date, datetime.strptime(self.start_time, "%Y-%m-%d").time())
                     instances.append(Task(instance_start_time, self.duration, self.task_description))
+=======
+        current_date = datetime.strptime(self.start_date, "%Y-%m-%d")
+        while current_date <= self.end_date:
+            if self.recurrence_pattern == "Weekly":
+                if current_date.weekday() == datetime.strptime(self.start_date, "%Y-%m-%d").weekday():
+                    instance_start_date = current_date.strftime("%Y-%m-%d")  # Convert datetime to string
+                    instances.append(Task(instance_start_date, self.start_time, self.duration, self.task_description, self.task_type))
+            elif self.recurrence_pattern == "Daily":
+                instance_start_date = current_date.strftime("%Y-%m-%d")  # Convert datetime to string
+                instances.append(Task(instance_start_date, self.start_time, self.duration, self.task_description, self.task_type))
+            elif self.recurrence_pattern == "Monthly":
+                if current_date.day == datetime.strptime(self.start_date, "%Y-%m-%d").day:
+                    instance_start_date = current_date.strftime("%Y-%m-%d")  # Convert datetime to string
+                    instances.append(Task(instance_start_date, self.start_time, self.duration, self.task_description, self.task_type))
+            elif self.recurrence_pattern == "Yearly":
+                if current_date.month == datetime.strptime(self.start_date, "%Y-%m-%d").month and current_date.day == datetime.strptime(self.start_date, "%Y-%m-%d").day:
+                    instance_start_date = current_date.strftime("%Y-%m-%d")  # Convert datetime to string
+                    instances.append(Task(instance_start_date, self.start_time, self.duration, self.task_description, self.task_type))
+>>>>>>> Stashed changes
             current_date += timedelta(days=1)
             if current_date > self.end_date:  # Check if current_date exceeds the end_date
                 break  # Exit the loop if current_date exceeds the end_date

@@ -11,9 +11,25 @@ class Model:
     def add_task(self, task):
         # Check for overlap before adding the task
         if self.validate_overlap(task):
+<<<<<<< Updated upstream
             # Add task to the list
             self.tasks.append(task)
             return True
+=======
+            if task.task_type == "Antitask":
+                # Find the recurring task with the same start time
+                for i, existing_task in enumerate(self.tasks):
+                    if existing_task.task_type == "Recurring Task" and existing_task.start_date == task.start_date:
+                        # Replace the recurring task with the anti-task
+                        self.tasks[i] = AntiTask(task.start_date, task.start_time, task.duration, task.task_description, task.task_type)
+                        return True  # Anti-task successfully replaced recurring task
+                # If no recurring task is found, task is invalid
+                return False
+            else:
+                # Add task to the list
+                self.tasks.append(task)
+                return True
+>>>>>>> Stashed changes
         else:
             return False
 
@@ -45,6 +61,7 @@ class Model:
             return False
 
     def validate_overlap(self, new_task):
+<<<<<<< Updated upstream
         if isinstance(new_task.start_time, datetime):
             new_start_time = new_task.start_time
         else:
@@ -65,10 +82,27 @@ class Model:
 
             # Check if new task overlaps with existing task
             if (task_start_time <= new_start_time < task_end_time) or (new_start_time <= task_start_time < new_end_time):
+=======
+        new_start_time = datetime.strptime(new_task.start_time, "%H:%M")
+        new_end_time = new_start_time + timedelta(minutes=new_task.duration)
+
+        for task in self.tasks:
+            task_start_time = datetime.strptime(task.start_time, "%H:%M")
+            task_end_time = task_start_time + timedelta(minutes=task.duration)
+
+            # Check if new task overlaps with existing task
+            if (task_start_time <= new_start_time < task_end_time) or (new_start_time <= task_start_time < new_end_time):
+                if new_task.task_type == "Antitask":
+                    # Anti Task can overlap with any task
+                    continue
+                elif new_task.task_type == "Recurring Task":
+                    # Recurring Task can overlap with Recurring Task if they have the same start time and start date
+                    continue
+>>>>>>> Stashed changes
                 # Overlap detected
                 return False
         return True
-    
+
     def save_tasks_to_file(self, filename):
         # Save tasks to a file
         with open(filename, 'w') as file:
