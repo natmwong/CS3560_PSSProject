@@ -189,8 +189,50 @@ class Viewer:
                 task_info = f"Task Description: {task.task_description}\nTask Type: {task.task_type}\nDate: {task.start_date}\nStart Time: {task.start_time}\nDuration: {task.duration} minutes"
                 ttk.Label(popup, text=task_info).pack(padx=10, pady=10)
                 print(task_info)
+                
+                # Add an "Edit" button
+                edit_button = ttk.Button(popup, text="Edit", command=lambda t=task: self.edit_task(t))
+                edit_button.pack(padx=10, pady=5)
+
         else:
             messagebox.showinfo("No Tasks", "There are no tasks on the selected date.")
+    def edit_task(self, task):
+        # Create a new popup window for editing task information
+        edit_popup = tk.Toplevel(self.root)
+        edit_popup.title("Edit Task")
+
+        # Function to update the task with new information
+        def update_task():
+            # Get updated information
+            updated_description = description_entry.get()
+            updated_time = time_entry.get()
+            updated_duration = duration_entry.get()
+
+            # Update the task using the controller
+            self.controller.edit_task(task, updated_description, updated_time, updated_duration)
+
+            # Close the popup window
+            edit_popup.destroy()
+
+        # Labels and entry fields for editing task information
+        ttk.Label(edit_popup, text="Task Description:").pack(pady=5)
+        description_entry = ttk.Entry(edit_popup, width=30)
+        description_entry.insert(0, task.task_description)
+        description_entry.pack()
+
+        ttk.Label(edit_popup, text="Start Time (HH:MM):").pack(pady=5)
+        time_entry = ttk.Entry(edit_popup, width=10)
+        time_entry.insert(0, task.start_time)
+        time_entry.pack()
+
+        ttk.Label(edit_popup, text="Duration (Minutes):").pack(pady=5)
+        duration_entry = ttk.Entry(edit_popup, width=10)
+        duration_entry.insert(0, task.duration)
+        duration_entry.pack()
+
+        # Button to update the task
+        update_button = ttk.Button(edit_popup, text="Update", command=update_task)
+        update_button.pack(pady=10)
 
     def run(self):
         # Run the Tkinter main loop
