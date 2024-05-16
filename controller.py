@@ -29,3 +29,8 @@ class Controller:
             print(task.task_description, task.start_date, task.start_time, task.duration, task.task_type)
         
         return is_valid
+    def edit_task(self, task, updated_description, updated_time, updated_duration):
+        # Find the task in the model and update its attributes
+        task.task_description = updated_description
+        task.start_time = updated_time
+        task.duration = updated_duration
