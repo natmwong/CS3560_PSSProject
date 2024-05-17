@@ -35,3 +35,7 @@ class Controller:
         task.task_description = updated_description
         task.start_time = updated_time
         task.duration = updated_duration
+
+    def delete_task(self, task):
+        # Delete the task from the model
+        return self.model.delete_task(task)

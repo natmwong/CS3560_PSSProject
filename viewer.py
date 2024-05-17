@@ -195,6 +195,10 @@ class Viewer:
                 # Add an "Edit" button
                 edit_button = ttk.Button(popup, text="Edit", command=lambda t=task: self.edit_task(t))
                 edit_button.pack(padx=10, pady=5)
+                
+                # Add a "Delete" button
+                delete_button = ttk.Button(popup, text="Delete", command=lambda t=task: self.delete_task(t))
+                delete_button.pack(padx=10, pady=5)
 
         else:
             messagebox.showinfo("No Tasks", "There are no tasks on the selected date.")
@@ -236,6 +240,31 @@ class Viewer:
         # Button to update the task
         update_button = ttk.Button(edit_popup, text="Update", command=update_task)
         update_button.pack(pady=10)
+
+    def delete_task(self, task):
+        # Create a confirmation popup window
+        confirmation_popup = tk.Toplevel(self.root)
+        confirmation_popup.title("Confirmation")
+
+        # Function to delete the task
+        def delete():
+            # Remove the task from the schedule
+            self.controller.delete_task(task)
+
+            # Close the confirmation popup
+            confirmation_popup.destroy()
+
+        # Function to close the confirmation popup
+        def close():
+            # Close the confirmation popup
+            confirmation_popup.destroy()
+
+        # Label and buttons for confirmation
+        ttk.Label(confirmation_popup, text="Delete this task?").pack(pady=10)
+        delete_button = ttk.Button(confirmation_popup, text="Yes", command=delete)
+        delete_button.pack(side="left", padx=10)
+        close_button = ttk.Button(confirmation_popup, text="No", command=close)
+        close_button.pack(side="right", padx=10)
 
 
     def run(self):
