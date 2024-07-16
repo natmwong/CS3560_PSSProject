@@ -27,8 +27,6 @@ Contributors names
 * Daren Sathy 
 * John West
 * Natasha Wong
-* Adeline Tang
-* Daniel Sirousbakht
 * Natalia Jauregui  
 
 ## Version History
